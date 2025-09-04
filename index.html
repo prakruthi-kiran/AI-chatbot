@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Tickets - AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo h1 {
+            color: #4a5568;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+            min-height: 700px;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 2rem;
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bot-avatar {
+            font-size: 3rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-details h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .status {
+            background: #48bb78;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            background: #f8fafc;
+            min-height: 400px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .message-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .bot-message .message-avatar {
+            background: #4299e1;
+            color: white;
+            margin-right: 1.5rem;
+        }
+
+        .user-message .message-avatar {
+            background: #48bb78;
+            color: white;
+            margin-left: 1.5rem;
+        }
+
+        .message-content {
+            max-width: 85%;
+            padding: 2rem 2.5rem;
+            border-radius: 20px;
+            line-height: 1.7;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .bot-message .message-content {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message .message-content {
+            background: #4299e1;
+            color: white;
+        }
+
+        .message-content ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .message-content li {
+            margin-bottom: 0.25rem;
+        }
+
+        .quick-actions {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .quick-actions h4 {
+            margin-bottom: 1.5rem;
+            color: #4a5568;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-input-container {
+            padding: 2rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 1.25rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: #4299e1;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 1.25rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .ticket-info {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .ticket-info h3 {
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .info-card p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .pricing-info,
+        .museum-hours {
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-info h4,
+        .museum-hours h4 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .pricing-info ul,
+        .museum-hours ul {
+            list-style: none;
+        }
+
+        .pricing-info li,
+        .museum-hours li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pricing-info li:last-child,
+        .museum-hours li:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo p {
+                font-size: 1rem;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 180px);
+                min-height: 600px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .message-content {
+                max-width: 95%;
+                font-size: 1.2rem;
+                padding: 1.75rem 2rem;
+                font-weight: 500;
+            }
+            
+            .chat-input {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .chat-input input,
+            .send-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+            
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .chat-container {
+                border-radius: 10px;
+                height: calc(100vh - 150px);
+                min-height: 500px;
+            }
+            
+            .chat-messages {
+                padding: 1.5rem;
+            }
+            
+            .chat-input-container,
+            .quick-actions {
+                padding: 1.5rem;
+            }
+            
+            .ticket-info {
+                padding: 1rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>🏛️ Museum Tickets</h1>
+                <p>Book your visit with our AI assistant</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="bot-info">
+                        <div class="bot-avatar">🤖</div>
+                        <div class="bot-details">
+                            <h3>Museum Assistant</h3>
+                            <span class="status">Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>Welcome to the Museum Ticketing System! I'm here to help you book tickets for our amazing museums.</p>
+                            <p>I can help you with:</p>
+                            <ul>
+                                <li>🎨 Art Museum tickets</li>
+                                <li>🦕 Natural History Museum</li>
+                                <li>🚀 Science & Technology Museum</li>
+                                <li>🏺 History & Culture Museum</li>
+                            </ul>
+                            <p>Which museum would you like to visit?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h4>Quick Actions:</h4>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="selectMuseum('art')">🎨 Art Museum</button>
+                        <button class="action-btn" onclick="selectMuseum('natural')">🦕 Natural History</button>
+                        <button class="action-btn" onclick="selectMuseum('science')">🚀 Science & Tech</button>
+                        <button class="action-btn" onclick="selectMuseum('history')">🏺 History & Culture</button>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()" class="send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="ticket-info">
+                    <h3>Ticket Information</h3>
+                    <div class="info-card">
+                        <h4>Current Selection</h4>
+                        <p id="selectedMuseum">No museum selected</p>
+                        <p id="selectedDate">No date selected</p>
+                        <p id="selectedTickets">No tickets selected</p>
+                        <p id="totalPrice">Total: ₹0.00</p>
+                    </div>
+                    
+                    <div class="pricing-info">
+                        <h4>General Pricing</h4>
+                        <ul>
+                            <li>Adult: ₹1,200</li>
+                            <li>Student: ₹800</li>
+                            <li>Senior (65+): ₹900</li>
+                            <li>Child (under 12): ₹600</li>
+                        </ul>
+                    </div>
+
+                    <div class="museum-hours">
+                        <h4>Museum Hours</h4>
+                        <ul>
+                            <li>Mon-Fri: 9:00 AM - 6:00 PM</li>
+                            <li>Saturday: 10:00 AM - 8:00 PM</li>
+                            <li>Sunday: 11:00 AM - 5:00 PM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 'museum';
+        let bookingData = {
+            museum: '',
+            date: '',
+            tickets: {},
+            total: 0
+        };
+
+        const museums = {
+            'art': 'Art Museum',
+            'natural': 'Natural History Museum',
+            'science': 'Science & Technology Museum',
+            'history': 'History & Culture Museum'
+        };
+
+        const pricing = {
+            adult: 1200.00,
+            student: 800.00,
+            senior: 900.00,
+            child: 600.00
+        };
+
+        function selectMuseum(museumType) {
+            bookingData.museum = museumType;
+            document.getElementById('selectedMuseum').textContent = museums[museumType];
+            
+            addBotMessage(`Great choice! You've selected the ${museums[museumType]}. Now, which date would you like to visit? Please enter a date (e.g., "December 15, 2024" or "next Friday").`);
+            currentStep = 'date';
+        }
+
+        function addBotMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addUserMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+                <div class="message-avatar">👤</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                processUserMessage(message);
+            }, 500);
+        }function processUserMessage(message) {
+    switch (currentStep) {
+        case 'museum':
+            addBotMessage("Please select a museum from the quick actions above, or tell me which museum you'd like to visit.");
+            break;
+        
+        case 'date':
+            bookingData.date = message;
+            document.getElementById('selectedDate').innerText = "Selected Date: " + message;
+            addBotMessage("Great! Now please choose a time slot.");
+            currentStep = 'timeslot';
+            showQuickActions(['10:00 AM', '12:00 PM', '2:00 PM', '4:00 PM']);
+            break;
+
+        case 'timeslot':
+            bookingData.timeslot = message;
+            document.getElementById('selectedTimeslot').innerText = "Selected Time: " + message;
+            addBotMessage("Perfect! How many tickets would you like to book?");
+            currentStep = 'tickets';
+            break;
+
+        case 'tickets':
+            let numTickets = parseInt(message);
+            if (isNaN(numTickets) || numTickets <= 0) {
+                addBotMessage("Please enter a valid number of tickets.");
+            } else {
+                bookingData.tickets = numTickets;
+                document.getElementById('selectedTickets').innerText = "Tickets: " + numTickets;
+                addBotMessage("Got it! Now please provide your name for the booking.");
+                currentStep = 'name';
+            }
+            break;
+
+        case 'name':
+            bookingData.name = message;
+            document.getElementById('selectedName').innerText = "Name: " + message;
+            addBotMessage("Thanks! Please provide your email address to receive the booking confirmation.");
+            currentStep = 'email';
+            break;
+
+        case 'email':
+            bookingData.email = message;
+            document.getElementById('selectedEmail').innerText = "Email: " + message;
+            addBotMessage("Almost done! Please confirm if everything looks good: \n" +
+                "Museum: " + bookingData.museum + "\n" +
+                "Date: " + bookingData.date + "\n" +
+                "Time: " + bookingData.timeslot + "\n" +
+                "Tickets: " + bookingData.tickets + "\n" +
+                "Name: " + bookingData.name + "\n" +
+                "Email: " + bookingData.email);
+            addBotMessage("Type 'confirm' to proceed to payment or 'cancel' to restart.");
+            currentStep = 'confirm';
+            break;
+
+        case 'confirm':
+            if (message.toLowerCase() === 'confirm') {
+                addBotMessage("Redirecting you to secure payment gateway...");
+                // Example: redirect to payment page
+                window.location.href = "payment.html"; 
+            } else if (message.toLowerCase() === 'cancel') {
+                addBotMessage("Your booking has been cancelled. Let's start over!");
+                resetBooking();
+            } else {
+                addBotMessage("Please type 'confirm' or 'cancel'.");
+            }
+            break;
+
+        default:
+            addBotMessage("I didn’t quite get that. Let’s start with selecting a museum.");
+            currentStep = 'museum';
+            showMuseumQuickActions();
+            break;
+    }
+}
+
