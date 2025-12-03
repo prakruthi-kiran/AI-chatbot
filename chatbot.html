@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Tickets - AI Assistant</title>
+    <link rel="stylesheet" href="design.css">
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <script type="text/javascript">
+    (function(){
+        emailjs.init({
+            publicKey: "Sl83Vwzv24AZWz3lt",
+        });
+    })();
+    </script>
+    <script src="email.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>🏛️ Museum Tickets</h1>
+                <p>Book your visit with our AI assistant</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="bot-info">
+                        <div class="bot-avatar">🤖</div>
+                        <div class="bot-details">
+                            <h3>Museum Assistant</h3>
+                            <span class="status">Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>Welcome to the Museum Ticketing System! I'm here to help you book tickets for our amazing museums.</p>
+                            <p>I can help you with:</p>
+                            <ul>
+                                <li>🎨National Gallery of Modern Art</li>
+                                <li>🦕Visvesvaraya Industrial & Technological Museum</li>
+                                <li>🚀Param Science Centre</li>
+                                <li>🏺HMT Heritage Centre & Museum</li>
+                            </ul>
+                            <p>Which museum would you like to visit?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-steps-container">
+                    <div class="quick-actions" id="museumStep">
+                        <h4>Step 1: Select Museum</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="selectMuseum('art')">🎨National Gallery of Modern Art</button>
+                            <button class="action-btn" onclick="selectMuseum('natural')">🦕Visvesvaraya Industrial & Technological Museum</button>
+                            <button class="action-btn" onclick="selectMuseum('science')">🚀Param Science Centre</button>
+                            <button class="action-btn" onclick="selectMuseum('history')">🏺HMT Heritage Centre & Museum</button>
+                        </div>
+                    </div>
+
+                    <div class="date-selection" id="dateStep" style="display: none;">
+                        <h4>Step 2: 📅 Select Visit Date</h4>
+                        <input type="date" id="dateSelector" onchange="updateSelectedDate()">
+                    </div>
+                    
+                    <div class="ticket-selection" id="ticketStep" style="display: none;">
+                        <h4>Step 3: 🎫 Select Ticket Categories & Quantities</h4>
+                        
+                        <div class="ticket-categories">
+                            <div class="category-section">
+                                <h5>🏠 General Admission</h5>
+                                <div class="ticket-selectors">
+                                    <div class="ticket-type">
+                                        <label for="adultTickets">Adults (₹1,200):</label>
+                                        <select id="adultTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="studentTickets">Students (₹800):</label>
+                                        <select id="studentTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="seniorTickets">Seniors 65+ (₹900):</label>
+                                        <select id="seniorTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="childTickets">Children under 12 (₹600):</label>
+                                        <select id="childTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="category-section">
+                                <h5>⭐ Premium Experience</h5>
+                                <div class="ticket-selectors">
+                                    <div class="ticket-type">
+                                        <label for="vipTickets">VIP Tour + Audio Guide (₹2,500):</label>
+                                        <select id="vipTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="photographyTickets">Photography Pass (₹500):</label>
+                                        <select id="photographyTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="category-section">
+                                <h5>👨‍👩‍👧‍👦 Family & Group Packages</h5>
+                                <div class="ticket-selectors">
+                                    <div class="ticket-type">
+                                        <label for="familyPackTickets">Family Pack (2 Adults + 2 Children) (₹3,200):</label>
+                                        <select id="familyPackTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="groupTickets">Group Package (10+ people) (₹900 per person):</label>
+                                        <select id="groupTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="10">10 people</option>
+                                            <option value="15">15 people</option>
+                                            <option value="20">20 people</option>
+                                            <option value="25">25 people</option>
+                                            <option value="30">30 people</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="category-section">
+                                <h5>🎨 Special Exhibitions & Workshops</h5>
+                                <div class="ticket-selectors">
+                                    <div class="ticket-type">
+                                        <label for="specialExhibitionTickets">Special Exhibition Access (₹800):</label>
+                                        <select id="specialExhibitionTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="ticket-type">
+                                        <label for="workshopTickets">Educational Workshop (₹1,500):</label>
+                                        <select id="workshopTickets" onchange="updateTicketCount()">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-summary" id="ticketSummary" style="display: none;">
+                            <div class="summary-card">
+                                <h6>📝 Current Selection:</h6>
+                                <div id="currentTicketList"></div>
+                                <div class="total-amount">
+                                    <strong>Total: <span id="currentTotal">₹0.00</span></strong>
+                                </div>
+                                <button class="proceed-btn" onclick="proceedToConfirm()" id="proceedBtn">
+                                    ✅ Proceed to Confirmation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="confirm-section" id="confirmStep" style="display: none;">
+    <h4>Step 4: 🎉 Confirm Your Booking</h4>
+    <div class="booking-summary">
+        <div class="summary-details">
+            <p><strong>Museum:</strong> <span id="confirmMuseum"></span></p>
+            <p><strong>Date:</strong> <span id="confirmDate"></span></p>
+            <p><strong>Tickets:</strong> <span id="confirmTickets"></span></p>
+            <p class="total-price"><strong>Total Amount: <span id="confirmTotal"></span></strong></p>
+        </div>
+
+        <!-- NEW: Email input so we can send confirmation -->
+        <div class="email-collect">
+            <label for="customerEmail"><strong>Your Email (we'll send e-tickets here):</strong></label><br>
+            <input id="customerEmail" type="email" placeholder="you@example.com" />
+            <div id="emailError" style="color: #c00; display:none; margin-top:6px;">Please enter a valid email address.</div>
+        </div>
+    </div>
+    <button class="confirm-btn" onclick="confirmBooking()" id="confirmBtn">
+        🎫 Confirm Booking
+    </button>
+</div>
+
+
+                    <div class="payment-section" id="paymentStep" style="display: none;">
+                        <h4>Step 5: 💳 Payment</h4>
+                        <div class="payment-container">
+                            <div class="payment-info">
+                                <p>🔒 <strong>Secure Payment</strong></p>
+                                <p>Scan the QR code below to complete your payment</p>
+                                <div class="payment-amount">
+                                    <strong>Amount to Pay: <span id="paymentAmount"></span></strong>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-container">
+                                <img src="qr.jpg" 
+                                     alt="Payment QR Code" 
+                                     id="paymentQR" 
+                                     class="qr-code">
+                                <p class="qr-instruction">upi id: sanjayranga120604-1@oksbi</p>
+                            </div>
+                            
+                            <div class="payment-actions">
+                                <button class="payment-done-btn" onclick="completePayment()">
+                                    ✅ Payment Completed
+                                </button>
+                                <button class="back-btn" onclick="goBackToConfirm()">
+                                    ⬅️ Back to Booking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()" class="send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="ticket-info">
+                    <h3>Ticket Information</h3>
+                    <div class="info-card">
+                        <h4>Current Selection</h4>
+                        <p id="selectedMuseum">No museum selected</p>
+                        <p id="selectedDate">No date selected</p>
+                        <p id="selectedTickets">No tickets selected</p>
+                        <p id="totalPrice">Total: ₹0.00</p>
+                    </div>
+                    
+                    <div class="pricing-info">
+                        <h4>Pricing Categories</h4>
+                        <ul>
+                            <li><strong>General Admission:</strong></li>
+                            <li>Adult: ₹1,200</li>
+                            <li>Student: ₹800</li>
+                            <li>Senior (65+): ₹900</li>
+                            <li>Child (under 12): ₹600</li>
+                        </ul>
+                        <ul>
+                            <li><strong>Premium Experience:</strong></li>
+                            <li>VIP Tour + Audio: ₹2,500</li>
+                            <li>Photography Pass: ₹500</li>
+                        </ul>
+                        <ul>
+                            <li><strong>Packages:</strong></li>
+                            <li>Family Pack: ₹3,200</li>
+                            <li>Group (10+): ₹900/person</li>
+                            <li>Special Exhibition: ₹800</li>
+                            <li>Workshop: ₹1,500</li>
+                        </ul>
+                    </div>
+
+                    <div class="museum-hours">
+                        <h4>Museum Hours</h4>
+                        <ul>
+                            <li>Mon-Fri: 9:00 AM - 6:00 PM</li>
+                            <li>Saturday: 10:00 AM - 8:00 PM</li>
+                            <li>Sunday: 11:00 AM - 5:00 PM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 'museum';
+        let bookingData = {
+            museum: '',
+            date: '',
+            tickets: {
+                adult: 0,
+                student: 0,
+                senior: 0,
+                child: 0,
+                vip: 0,
+                photography: 0,
+                familyPack: 0,
+                group: 0,
+                specialExhibition: 0,
+                workshop: 0
+            },
+            total: 0
+        };
+
+        const museums = {
+            'art': 'National Gallery of Modern Art',
+            'natural': 'Visvesvaraya Industrial & Technological Museum',
+            'science': 'Param Science Centre',
+            'history': 'HMT Heritage Centre & Museum'
+        };
+
+        const pricing = {
+            adult: 1200.00,
+            student: 800.00,
+            senior: 900.00,
+            child: 600.00,
+            vip: 2500.00,
+            photography: 500.00,
+            familyPack: 3200.00,
+            group: 900.00,
+            specialExhibition: 800.00,
+            workshop: 1500.00
+        };
+
+        function selectMuseum(museumType) {
+            bookingData.museum = museumType;
+            document.getElementById('selectedMuseum').textContent = museums[museumType];
+            
+            addBotMessage(`Great choice! You've selected the ${museums[museumType]}. Now please select your visit date.`);
+            
+            slideToNextStep('museumStep', 'dateStep');
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateSelector').min = today;
+            
+            currentStep = 'date';
+        }
+
+        function updateSelectedDate() {
+            const dateInput = document.getElementById('dateSelector');
+            const selectedDate = dateInput.value;
+            
+            if (selectedDate) {
+                bookingData.date = selectedDate;
+                const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                document.getElementById('selectedDate').textContent = formattedDate;
+                
+                addBotMessage(`Perfect! Your visit is scheduled for ${formattedDate}. Now please select the tickets you need from different categories below.`);
+                
+                slideToNextStep('dateStep', 'ticketStep');
+                currentStep = 'tickets';
+            }
+        }
+
+        function updateTicketCount() {
+            // Get values from all ticket selectors
+            const adults = parseInt(document.getElementById('adultTickets').value) || 0;
+            const students = parseInt(document.getElementById('studentTickets').value) || 0;
+            const seniors = parseInt(document.getElementById('seniorTickets').value) || 0;
+            const children = parseInt(document.getElementById('childTickets').value) || 0;
+            const vip = parseInt(document.getElementById('vipTickets').value) || 0;
+            const photography = parseInt(document.getElementById('photographyTickets').value) || 0;
+            const familyPack = parseInt(document.getElementById('familyPackTickets').value) || 0;
+            const group = parseInt(document.getElementById('groupTickets').value) || 0;
+            const specialExhibition = parseInt(document.getElementById('specialExhibitionTickets').value) || 0;
+            const workshop = parseInt(document.getElementById('workshopTickets').value) || 0;
+            
+            // Update booking data
+            bookingData.tickets = {
+                adult: adults,
+                student: students,
+                senior: seniors,
+                child: children,
+                vip: vip,
+                photography: photography,
+                familyPack: familyPack,
+                group: group,
+                specialExhibition: specialExhibition,
+                workshop: workshop
+            };
+            
+            // Calculate total
+            bookingData.total = (adults * pricing.adult) + 
+                              (students * pricing.student) + 
+                              (seniors * pricing.senior) + 
+                              (children * pricing.child) +
+                              (vip * pricing.vip) +
+                              (photography * pricing.photography) +
+                              (familyPack * pricing.familyPack) +
+                              (group * pricing.group) +
+                              (specialExhibition * pricing.specialExhibition) +
+                              (workshop * pricing.workshop);
+            
+            // Update displays
+            updateTicketDisplay();
+            updateCurrentTicketSummary();
+            
+            // Show/hide summary based on whether tickets are selected
+            const hasTickets = Object.values(bookingData.tickets).some(count => count > 0);
+            const summaryElement = document.getElementById('ticketSummary');
+            
+            if (hasTickets) {
+                summaryElement.style.display = 'block';
+                addBotMessage(`Great! You've selected ${formatTickets()}. Total: ₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}. You can continue selecting more tickets or proceed to confirmation.`);
+            } else {
+                summaryElement.style.display = 'none';
+            }
+        }
+
+        function updateCurrentTicketSummary() {
+            const ticketList = document.getElementById('currentTicketList');
+            const totalElement = document.getElementById('currentTotal');
+            
+            const selectedTickets = [];
+            
+            if (bookingData.tickets.adult > 0) selectedTickets.push(`${bookingData.tickets.adult} Adult(s)`);
+            if (bookingData.tickets.student > 0) selectedTickets.push(`${bookingData.tickets.student} Student(s)`);
+            if (bookingData.tickets.senior > 0) selectedTickets.push(`${bookingData.tickets.senior} Senior(s)`);
+            if (bookingData.tickets.child > 0) selectedTickets.push(`${bookingData.tickets.child} Child(ren)`);
+            if (bookingData.tickets.vip > 0) selectedTickets.push(`${bookingData.tickets.vip} VIP Tour(s)`);
+            if (bookingData.tickets.photography > 0) selectedTickets.push(`${bookingData.tickets.photography} Photo Pass(es)`);
+            if (bookingData.tickets.familyPack > 0) selectedTickets.push(`${bookingData.tickets.familyPack} Family Pack(s)`);
+            if (bookingData.tickets.group > 0) selectedTickets.push(`${bookingData.tickets.group} Group Package(s)`);
+            if (bookingData.tickets.specialExhibition > 0) selectedTickets.push(`${bookingData.tickets.specialExhibition} Special Exhibition(s)`);
+            if (bookingData.tickets.workshop > 0) selectedTickets.push(`${bookingData.tickets.workshop} Workshop(s)`);
+            
+            ticketList.innerHTML = selectedTickets.length > 0 ? selectedTickets.join('<br>') : 'No tickets selected';
+            totalElement.textContent = `₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        function proceedToConfirm() {
+            const hasTickets = Object.values(bookingData.tickets).some(count => count > 0);
+            if (!hasTickets) {
+                addBotMessage("Please select at least one ticket before proceeding.");
+                return;
+            }
+            
+            // Update confirmation details
+            document.getElementById('confirmMuseum').textContent = museums[bookingData.museum];
+            document.getElementById('confirmDate').textContent = document.getElementById('selectedDate').textContent;
+            document.getElementById('confirmTickets').textContent = formatTickets();
+            document.getElementById('confirmTotal').textContent = `₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            addBotMessage(`Excellent! Here's your booking summary. Please review the details and confirm your booking.`);
+            
+            slideToNextStep('ticketStep', 'confirmStep');
+            currentStep = 'confirm';
+        }
+
+        function confirmBooking() {
+    // Validate email before proceeding
+    const emailInput = document.getElementById('customerEmail');
+    const emailError = document.getElementById('emailError');
+    const email = emailInput ? emailInput.value.trim() : '';
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+        if (emailError) emailError.style.display = 'block';
+        addBotMessage('Please enter a valid email address so we can send your e-ticket before proceeding to payment.');
+        return; // stop until valid email entered
+    }
+    if (emailError) emailError.style.display = 'none';
+
+    addBotMessage(`🎉 Great! Your booking details have been confirmed. Now proceed to payment to complete your booking.`);
+
+    // Update payment amount
+    document.getElementById('paymentAmount').textContent = `₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+    slideToNextStep('confirmStep', 'paymentStep');
+    currentStep = 'payment';
+}
+
+
+        function goBackToConfirm() {
+            slideToNextStep('paymentStep', 'confirmStep');
+            currentStep = 'confirm';
+        }
+
+       function completePayment() {
+    addBotMessage(`🎉 Payment Successful! Your booking has been confirmed!<br><br><strong>Booking Details:</strong><br>Museum: ${museums[bookingData.museum]}<br>Date: ${document.getElementById('selectedDate').textContent}<br>Tickets: ${formatTickets()}<br>Total Paid: ₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}<br><br>📧 You will receive a confirmation email shortly with your e-tickets.<br>📱 Please show this confirmation at the museum entrance.<br><br>Thank you for choosing our museums! Have a wonderful visit! 🏛️`);
+
+    
+    collectAndSendEmailAfterPayment().then((res) => {
+        
+        setTimeout(() => {
+            resetBooking();
+        }, 2000);
+    });
+}
+
+
+        function addBotMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addUserMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+                <div class="message-avatar">👤</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                processUserMessage(message);
+            }, 500);
+        }
+
+        function processUserMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Generic helpful responses based on current step
+            switch (currentStep) {
+                case 'museum':
+                    if (lowerMessage.includes('art')) {
+                        selectMuseum('art');
+                    } else if (lowerMessage.includes('history')) {
+                        selectMuseum('history');
+                    } else if (lowerMessage.includes('science')) {
+                        selectMuseum('science');
+                    } else if (lowerMessage.includes('natural')) {
+                        selectMuseum('natural');
+                    } else {
+                        addBotMessage("Please select a museum from the options above, or tell me which type of museum interests you (art, history, science, or natural history).");
+                    }
+                    break;
+                
+                case 'date':
+                    addBotMessage("Please use the date picker above to select your preferred visit date.");
+                    break;
+                
+                case 'tickets':
+                    addBotMessage("You can select tickets from multiple categories above. Choose the quantity for each type you need, then click 'Proceed to Confirmation' when ready.");
+                    break;
+                
+                case 'confirm':
+                    if (lowerMessage.includes('yes') || lowerMessage.includes('confirm') || lowerMessage.includes('book')) {
+                        confirmBooking();
+                    } else if (lowerMessage.includes('no') || lowerMessage.includes('back')) {
+                        addBotMessage("No problem! You can go back and modify your ticket selection.");
+                    } else {
+                        addBotMessage("Please review your booking details above and click 'Confirm Booking' to proceed, or let me know if you'd like to make changes.");
+                    }
+                    break;
+                
+                case 'payment':
+                    if (lowerMessage.includes('paid') || lowerMessage.includes('done') || lowerMessage.includes('complete')) {
+                        completePayment();
+                    } else {
+                        addBotMessage("Please scan the QR code to complete your payment, then click 'Payment Completed' when done.");
+                    }
+                    break;
+                
+                default:
+                    addBotMessage("I'm here to help you book museum tickets. How can I assist you today?");
+            }
+        }
+
+        function formatTickets() {
+            const parts = [];
+            if (bookingData.tickets.adult) parts.push(`${bookingData.tickets.adult} Adult(s)`);
+            if (bookingData.tickets.student) parts.push(`${bookingData.tickets.student} Student(s)`);
+            if (bookingData.tickets.senior) parts.push(`${bookingData.tickets.senior} Senior(s)`);
+            if (bookingData.tickets.child) parts.push(`${bookingData.tickets.child} Child(ren)`);
+            if (bookingData.tickets.vip) parts.push(`${bookingData.tickets.vip} VIP Tour(s)`);
+            if (bookingData.tickets.photography) parts.push(`${bookingData.tickets.photography} Photo Pass(es)`);
+            if (bookingData.tickets.familyPack) parts.push(`${bookingData.tickets.familyPack} Family Pack(s)`);
+            if (bookingData.tickets.group) parts.push(`${bookingData.tickets.group} Group Package(s)`);
+            if (bookingData.tickets.specialExhibition) parts.push(`${bookingData.tickets.specialExhibition} Special Exhibition(s)`);
+            if (bookingData.tickets.workshop) parts.push(`${bookingData.tickets.workshop} Workshop(s)`);
+            return parts.join(', ');
+        }
+
+        function updateTicketDisplay() {
+            document.getElementById('selectedTickets').textContent = formatTickets() || 'No tickets selected';
+            document.getElementById('totalPrice').textContent = `Total: ₹${bookingData.total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        function slideToNextStep(currentStepId, nextStepId) {
+            const currentStep = document.getElementById(currentStepId);
+            const nextStep = document.getElementById(nextStepId);
+            
+            currentStep.classList.add('slide-up');
+            
+            setTimeout(() => {
+                currentStep.style.display = 'none';
+                nextStep.style.display = 'block';
+                nextStep.classList.add('slide-in');
+                
+                const bookingContainer = document.querySelector('.booking-steps-container');
+                setTimeout(() => {
+                    if (nextStepId === 'ticketStep') {
+                        nextStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        bookingContainer.scrollTop = bookingContainer.scrollHeight;
+                    }
+                }, 100);
+                
+                setTimeout(() => {
+                    currentStep.classList.remove('slide-up');
+                    nextStep.classList.remove('slide-in');
+                }, 500);
+            }, 300);
+        }
+        
+        function resetBooking() {
+            currentStep = 'museum';
+            bookingData = {
+                museum: '',
+                date: '',
+                tickets: {adult: 0, student: 0, senior: 0, child: 0, vip: 0, photography: 0, familyPack: 0, group: 0, specialExhibition: 0, workshop: 0},
+                total: 0
+            };
+            
+            // Reset UI
+            document.getElementById('selectedMuseum').textContent = 'No museum selected';
+            document.getElementById('selectedDate').textContent = 'No date selected';
+            document.getElementById('selectedTickets').textContent = 'No tickets selected';
+            document.getElementById('totalPrice').textContent = 'Total: ₹0.00';
+            
+            // Reset form
+            document.getElementById('dateSelector').value = '';
+            document.getElementById('adultTickets').value = '0';
+            document.getElementById('studentTickets').value = '0';
+            document.getElementById('seniorTickets').value = '0';
+            document.getElementById('childTickets').value = '0';
+            document.getElementById('vipTickets').value = '0';
+            document.getElementById('photographyTickets').value = '0';
+            document.getElementById('familyPackTickets').value = '0';
+            document.getElementById('groupTickets').value = '0';
+            document.getElementById('specialExhibitionTickets').value = '0';
+            document.getElementById('workshopTickets').value = '0';
+            
+            // Reset steps visibility
+            document.getElementById('museumStep').style.display = 'block';
+            document.getElementById('dateStep').style.display = 'none';
+            document.getElementById('ticketStep').style.display = 'none';
+            document.getElementById('confirmStep').style.display = 'none';
+            document.getElementById('paymentStep').style.display = 'none';
+            document.getElementById('ticketSummary').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
